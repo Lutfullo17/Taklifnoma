@@ -1,0 +1,290 @@
+@import "tailwindcss";
+
+/* ============================================================
+   DIZAYN TIZIMI — Luxury Wedding Design Tokens
+   ============================================================ */
+@theme {
+  /* Qora / issiq quyuq ranglar */
+  --color-noir: #050403;
+  --color-ink: #0a0705;
+  --color-espresso: #1a1009;
+  --color-cocoa: #2b1a0d;
+  --color-mocha: #3d2714;
+
+  /* Oltin oila */
+  --color-gold-deep: #8c6d1f;
+  --color-gold: #d4af37;
+  --color-gold-soft: #e6c87d;
+  --color-champagne: #f2e2c0;
+
+  /* Issiq yorugʻ ranglar */
+  --color-cream: #f7f1e5;
+  --color-warm-white: #fdfbf6;
+
+  /* Shriftlar */
+  --font-display: var(--font-cinzel), "Times New Roman", serif;
+  --font-serif: var(--font-cormorant), Georgia, serif;
+  --font-sans: var(--font-manrope), system-ui, -apple-system, sans-serif;
+
+  /* Animatsiyalar */
+  --animate-shimmer: shimmer 6s ease-in-out infinite;
+  --animate-float-slow: floatY 9s ease-in-out infinite;
+  --animate-glow-pulse: glowPulse 5s ease-in-out infinite;
+  --animate-spin-slow: spin 26s linear infinite;
+  --animate-drift: drift 22s ease-in-out infinite alternate;
+
+  /* Silliq harakat egri chiziqlari */
+  --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes shimmer {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes floatY {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes glowPulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes drift {
+  0% {
+    transform: translate3d(-3%, -2%, 0) scale(1);
+  }
+  100% {
+    transform: translate3d(3%, 2%, 0) scale(1.12);
+  }
+}
+
+@keyframes scrollDot {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+}
+
+/* ============================================================
+   BAZA
+   ============================================================ */
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Mobil qurilmalarda gorizontal scroll boʻlmasligi uchun */
+    overflow-x: hidden;
+  }
+
+  body {
+    background-color: var(--color-noir);
+    color: var(--color-cream);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Navigatsiya balandligi hisobga olingan smooth scroll */
+  section[id] {
+    scroll-margin-top: 84px;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--color-gold) 35%, transparent);
+    color: var(--color-warm-white);
+  }
+
+  ::-webkit-scrollbar {
+    width: 9px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-noir);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+      180deg,
+      var(--color-gold-deep),
+      var(--color-gold)
+    );
+    border-radius: 999px;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-gold-soft);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+@utility gold-shimmer {
+  background-image: linear-gradient(
+    100deg,
+    #8c6d1f 0%,
+    #d4af37 22%,
+    #f7ecd0 45%,
+    #e6c87d 62%,
+    #d4af37 80%,
+    #a17c22 100%
+  );
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: var(--animate-shimmer);
+}
+
+@utility gold-plate {
+  background-image: linear-gradient(
+    100deg,
+    #a17c22 0%,
+    #d4af37 30%,
+    #f2e2c0 52%,
+    #d4af37 74%,
+    #a17c22 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility glass-card {
+  background: linear-gradient(
+    150deg,
+    rgba(255, 246, 224, 0.075) 0%,
+    rgba(255, 246, 224, 0.028) 42%,
+    rgba(10, 7, 5, 0.28) 100%
+  );
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  border: 1px solid rgba(212, 175, 55, 0.24);
+  box-shadow:
+    0 24px 60px -28px rgba(0, 0, 0, 0.9),
+    inset 0 1px 0 rgba(255, 240, 205, 0.14);
+}
+
+@utility hairline-gold {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(212, 175, 55, 0.55) 30%,
+    rgba(242, 226, 192, 0.95) 50%,
+    rgba(212, 175, 55, 0.55) 70%,
+    transparent
+  );
+}
+
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-gold-soft) 88%, transparent);
+}
+
+/* Fon uchun nozik shovqin (noise) teksturasi — SVG, tashqi rasm talab qilmaydi */
+@utility noise-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* ============================================================
+   HARAKATNI KAMAYTIRISH (accessibility)
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ============================================================
+   UZUK EFFEKTLARI
+   ============================================================ */
+@keyframes ringSheen {
+  to {
+    stroke-dashoffset: -497;
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.12;
+    transform: scale(0.55);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+.ring-sheen {
+  stroke-dasharray: 58 439;
+  animation: ringSheen 7s linear infinite;
+}
+
+.ring-sheen--slow {
+  animation-duration: 9.5s;
+  animation-delay: -3.2s;
+}
+
+.sparkle {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: twinkle 3.4s ease-in-out infinite;
+}
+
+.sparkle--a {
+  animation-delay: 0s;
+}
+.sparkle--b {
+  animation-delay: 0.9s;
+}
+.sparkle--c {
+  animation-delay: 1.7s;
+}
+.sparkle--d {
+  animation-delay: 2.5s;
+}
