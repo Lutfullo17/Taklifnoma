@@ -28,7 +28,7 @@ const UNITS: { key: keyof Parts; label: string }[] = [
 ];
 
 export default function Countdown() {
-  // Hydration mos kelishi uchun: server tomonda hisoblanmaydi
+  // Hydration mos kelishi uchun server tomonda hisoblanmaydi
   const [parts, setParts] = useState<Parts | null>(null);
   const [finished, setFinished] = useState(false);
 
@@ -50,53 +50,25 @@ export default function Countdown() {
   );
 
   return (
-    <section
-      id="vaqt"
-      className="relative w-full px-5 py-24 sm:px-8 sm:py-28 lg:py-36"
-    >
-      <div className="mx-auto w-full max-w-5xl">
-        <SectionTitle
-          eyebrow="Sanoq"
-          title="Toʻyga qolgan vaqt"
-          subtitle="Eng quvonchli kunimizga qadar sanoqli daqiqalar qoldi"
-        />
+    <section id="vaqt" className="relative w-full px-5 py-16 sm:px-8 sm:py-20">
+      <div className="mx-auto w-full max-w-3xl">
+        <SectionTitle eyebrow="Sanoq" title="Toʻyga qolgan vaqt" />
 
-        <div className="mt-12 grid grid-cols-2 gap-3.5 sm:mt-16 sm:gap-5 lg:grid-cols-4 lg:gap-6">
+        <div className="mt-9 grid grid-cols-4 gap-2 sm:mt-11 sm:gap-4">
           {UNITS.map((unit, i) => (
-            <Reveal
-              key={unit.key}
-              from="up"
-              delay={i * 0.09}
-              scaleFrom={0.94}
-              amount={0.2}
-            >
-              <div className="group glass-card relative overflow-hidden rounded-2xl px-3 py-6 text-center sm:rounded-[1.35rem] sm:px-4 sm:py-9">
-                {/* Yuqoridagi oltin chiziq */}
-                <span className="hairline-gold absolute inset-x-6 top-0 h-px opacity-70" />
-
-                {/* Ichki yumshoq porlash */}
-                <span
-                  aria-hidden
-                  className="pointer-events-none absolute -top-16 left-1/2 h-32 w-32 -translate-x-1/2 rounded-full opacity-60 blur-2xl transition-opacity duration-700 group-hover:opacity-100"
-                  style={{
-                    background:
-                      "radial-gradient(circle, rgba(212,175,55,0.28) 0%, transparent 70%)",
-                  }}
-                />
-
-                <div className="relative flex h-[3.4rem] items-center justify-center overflow-hidden sm:h-[5rem]">
+            <Reveal key={unit.key} from="up" delay={i * 0.07} amount={0.2}>
+              <div className="paper-card relative rounded-xl px-1 py-4 text-center sm:rounded-2xl sm:px-3 sm:py-6">
+                <div className="relative flex h-[2.3rem] items-center justify-center overflow-hidden sm:h-[3.4rem]">
                   {/*
-                    Har bir yangi qiymat yangi `key` bilan almashadi — eski tugun
-                    darhol olib tashlanadi. AnimatePresence ishlatilmaydi, chunki
-                    fonda turgan tabda chiqish animatsiyasi tugamay, tugunlar
-                    toʻplanib qolishi mumkin.
+                    Yangi qiymat yangi `key` bilan almashadi — eski tugun darhol
+                    olib tashlanadi, shuning uchun DOM tugunlari toʻplanmaydi.
                   */}
                   <motion.span
                     key={`${unit.key}-${values[unit.key]}`}
-                    initial={{ y: "55%", opacity: 0 }}
+                    initial={{ y: "50%", opacity: 0 }}
                     animate={{ y: "0%", opacity: 1 }}
-                    transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                    className="gold-plate block font-display text-[2.6rem] leading-none font-bold tabular-nums sm:text-[4rem]"
+                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                    className="gold-plate block font-display text-[1.75rem] leading-none font-bold tabular-nums sm:text-[2.7rem]"
                   >
                     {parts === null
                       ? "--"
@@ -104,7 +76,7 @@ export default function Countdown() {
                   </motion.span>
                 </div>
 
-                <p className="relative mt-3 text-[0.62rem] font-medium tracking-[0.3em] text-cream/55 uppercase sm:mt-4 sm:text-xs">
+                <p className="mt-2 text-[0.55rem] font-medium tracking-[0.18em] text-ink-soft uppercase sm:mt-3 sm:text-[0.66rem] sm:tracking-[0.26em]">
                   {unit.label}
                 </p>
               </div>
@@ -113,8 +85,8 @@ export default function Countdown() {
         </div>
 
         {finished ? (
-          <Reveal from="up" className="mt-10 text-center">
-            <p className="font-serif text-xl text-champagne italic sm:text-2xl">
+          <Reveal from="up" className="mt-8 text-center">
+            <p className="font-serif text-xl text-gold-deep italic sm:text-2xl">
               Bugun bizning baxtli kunimiz — sizni kutib qolamiz!
             </p>
           </Reveal>

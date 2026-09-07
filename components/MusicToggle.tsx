@@ -60,7 +60,7 @@ export default function MusicToggle() {
       <AnimatePresence>
         {!hintSeen && !playing && (
           <motion.span
-            className="glass-card hidden rounded-full px-4 py-2 text-[0.66rem] tracking-[0.18em] whitespace-nowrap text-cream/70 uppercase sm:block"
+            className="paper-card hidden rounded-full px-4 py-2 text-[0.66rem] tracking-[0.18em] whitespace-nowrap text-ink-soft uppercase sm:block"
             initial={{ opacity: 0, x: 12 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 12 }}
@@ -76,7 +76,7 @@ export default function MusicToggle() {
         onClick={toggle}
         aria-pressed={playing}
         aria-label={playing ? "Musiqani oʻchirish" : "Musiqani yoqish"}
-        className="group glass-card relative flex h-13 w-13 items-center justify-center rounded-full transition-all duration-500 hover:-translate-y-0.5 hover:border-gold/55 active:scale-95"
+        className="group paper-card relative flex h-13 w-13 items-center justify-center rounded-full transition-all duration-500 hover:-translate-y-0.5 hover:border-gold/70 active:scale-95"
         style={{ height: "3.25rem", width: "3.25rem" }}
       >
         {/* Ijro paytidagi porlash */}
@@ -87,14 +87,14 @@ export default function MusicToggle() {
           }`}
           style={{
             background:
-              "radial-gradient(circle, rgba(212,175,55,0.45) 0%, transparent 70%)",
+              "radial-gradient(circle, rgba(197,157,66,0.35) 0%, transparent 70%)",
           }}
         />
 
         {playing && (
           <span
             aria-hidden
-            className="absolute inset-0 animate-ping rounded-full border border-gold/25 [animation-duration:2.6s]"
+            className="absolute inset-0 animate-ping rounded-full border border-gold/35 [animation-duration:2.6s]"
           />
         )}
 
@@ -105,7 +105,7 @@ export default function MusicToggle() {
               {BARS.map((h, i) => (
                 <motion.span
                   key={i}
-                  className="w-[2.5px] rounded-full bg-gold-soft"
+                  className="w-[2.5px] rounded-full bg-gold"
                   animate={{ scaleY: [h * 0.35, h, h * 0.45] }}
                   transition={{
                     duration: 0.85 + i * 0.13,
@@ -118,10 +118,10 @@ export default function MusicToggle() {
               ))}
             </span>
           ) : busy ? (
-            <Pause className="h-5 w-5 animate-pulse text-gold-soft" strokeWidth={1.5} />
+            <Pause className="h-5 w-5 animate-pulse text-gold-deep" strokeWidth={1.5} />
           ) : (
             <Music2
-              className="h-5 w-5 text-gold-soft transition-transform duration-500 group-hover:scale-110"
+              className="h-5 w-5 text-gold-deep transition-transform duration-500 group-hover:scale-110"
               strokeWidth={1.5}
               aria-hidden
             />

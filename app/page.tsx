@@ -2,12 +2,10 @@ import { IntroProvider } from "@/components/IntroContext";
 import Preloader from "@/components/Preloader";
 import MusicToggle from "@/components/MusicToggle";
 import Backdrop from "@/components/visuals/Backdrop";
-import Nav from "@/components/layout/Nav";
-import Footer from "@/components/layout/Footer";
+import Footer from "@/components/Footer";
 import Hero from "@/components/sections/Hero";
-import EventInfo from "@/components/sections/EventInfo";
+import Invitation from "@/components/sections/Invitation";
 import Countdown from "@/components/sections/Countdown";
-import Romantic from "@/components/sections/Romantic";
 import Location from "@/components/sections/Location";
 
 export default function Home() {
@@ -15,13 +13,11 @@ export default function Home() {
     <IntroProvider>
       <Backdrop />
       <Preloader />
-      <Nav />
 
       <main className="relative">
         <Hero />
-        <EventInfo />
+        <Invitation />
         <Countdown />
-        <Romantic />
         <Location />
       </main>
 

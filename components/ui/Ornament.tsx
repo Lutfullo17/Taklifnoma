@@ -21,15 +21,15 @@ export default function Ornament({
           <path
             d="M12 1.5 L22.5 12 L12 22.5 L1.5 12 Z"
             fill="none"
-            stroke="#d4af37"
+            stroke="#b48a2f"
             strokeWidth="1.6"
           />
-          <path d="M12 6 L18 12 L12 18 L6 12 Z" fill="#d4af37" opacity="0.55" />
+          <path d="M12 6 L18 12 L12 18 L6 12 Z" fill="#b48a2f" opacity="0.55" />
         </svg>
       ) : (
         <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 shrink-0">
-          <circle cx="9" cy="13" r="6.4" fill="none" stroke="#d4af37" strokeWidth="1.5" />
-          <circle cx="15" cy="13" r="6.4" fill="none" stroke="#e6c87d" strokeWidth="1.5" />
+          <circle cx="9" cy="13" r="6.4" fill="none" stroke="#b48a2f" strokeWidth="1.5" />
+          <circle cx="15" cy="13" r="6.4" fill="none" stroke="#cdaa55" strokeWidth="1.5" />
         </svg>
       )}
 

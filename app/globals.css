@@ -1,25 +1,26 @@
 @import "tailwindcss";
 
 /* ============================================================
-   DIZAYN TIZIMI — Luxury Wedding Design Tokens
+   DIZAYN TIZIMI — yorugʻ, issiq va nafis nikoh taklifnomasi
+   Asos: fil suyagi rangli qogʻoz + oltin folga + iliq jigarrang matn
    ============================================================ */
 @theme {
-  /* Qora / issiq quyuq ranglar */
-  --color-noir: #050403;
-  --color-ink: #0a0705;
-  --color-espresso: #1a1009;
-  --color-cocoa: #2b1a0d;
-  --color-mocha: #3d2714;
+  /* Yorugʻ issiq fon ranglari */
+  --color-ivory: #fdfaf4;
+  --color-cream: #f6efe2;
+  --color-sand: #eee2cd;
+  --color-linen: #e6d7bd;
+
+  /* Matn ranglari */
+  --color-ink: #3a2e23;
+  --color-ink-soft: #6d5c48;
+  --color-ink-mute: #907e67;
 
   /* Oltin oila */
-  --color-gold-deep: #8c6d1f;
-  --color-gold: #d4af37;
-  --color-gold-soft: #e6c87d;
-  --color-champagne: #f2e2c0;
-
-  /* Issiq yorugʻ ranglar */
-  --color-cream: #f7f1e5;
-  --color-warm-white: #fdfbf6;
+  --color-gold-deep: #8a6a22;
+  --color-gold: #b48a2f;
+  --color-gold-soft: #cdaa55;
+  --color-champagne: #e6cf9c;
 
   /* Shriftlar */
   --font-display: var(--font-cinzel), "Times New Roman", serif;
@@ -27,14 +28,8 @@
   --font-sans: var(--font-manrope), system-ui, -apple-system, sans-serif;
 
   /* Animatsiyalar */
-  --animate-shimmer: shimmer 6s ease-in-out infinite;
-  --animate-float-slow: floatY 9s ease-in-out infinite;
-  --animate-glow-pulse: glowPulse 5s ease-in-out infinite;
-  --animate-spin-slow: spin 26s linear infinite;
-  --animate-drift: drift 22s ease-in-out infinite alternate;
-
-  /* Silliq harakat egri chiziqlari */
-  --ease-luxe: cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-shimmer: shimmer 7s ease-in-out infinite;
+  --animate-drift: drift 26s ease-in-out infinite alternate;
 }
 
 @keyframes shimmer {
@@ -47,48 +42,24 @@
   }
 }
 
-@keyframes floatY {
-  0%,
-  100% {
-    transform: translateY(0);
+@keyframes drift {
+  0% {
+    transform: translate3d(-2%, -1%, 0) scale(1);
   }
-  50% {
-    transform: translateY(-14px);
+  100% {
+    transform: translate3d(2%, 1%, 0) scale(1.1);
   }
 }
 
-@keyframes glowPulse {
+@keyframes haloPulse {
   0%,
   100% {
-    opacity: 0.35;
+    opacity: 0.5;
     transform: scale(1);
   }
   50% {
-    opacity: 0.7;
-    transform: scale(1.08);
-  }
-}
-
-@keyframes drift {
-  0% {
-    transform: translate3d(-3%, -2%, 0) scale(1);
-  }
-  100% {
-    transform: translate3d(3%, 2%, 0) scale(1.12);
-  }
-}
-
-@keyframes scrollDot {
-  0% {
-    transform: translateY(0);
-    opacity: 0;
-  }
-  30% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(14px);
-    opacity: 0;
+    opacity: 0.85;
+    transform: scale(1.06);
   }
 }
 
@@ -102,13 +73,12 @@
 
   html {
     scroll-behavior: smooth;
-    /* Mobil qurilmalarda gorizontal scroll boʻlmasligi uchun */
     overflow-x: hidden;
   }
 
   body {
-    background-color: var(--color-noir);
-    color: var(--color-cream);
+    background-color: var(--color-ivory);
+    color: var(--color-ink);
     font-family: var(--font-sans);
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
@@ -116,33 +86,28 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* Navigatsiya balandligi hisobga olingan smooth scroll */
   section[id] {
-    scroll-margin-top: 84px;
+    scroll-margin-top: 24px;
   }
 
   ::selection {
-    background: color-mix(in srgb, var(--color-gold) 35%, transparent);
-    color: var(--color-warm-white);
+    background: color-mix(in srgb, var(--color-gold) 28%, transparent);
+    color: var(--color-ink);
   }
 
   ::-webkit-scrollbar {
     width: 9px;
   }
   ::-webkit-scrollbar-track {
-    background: var(--color-noir);
+    background: var(--color-cream);
   }
   ::-webkit-scrollbar-thumb {
-    background: linear-gradient(
-      180deg,
-      var(--color-gold-deep),
-      var(--color-gold)
-    );
+    background: linear-gradient(180deg, var(--color-gold-soft), var(--color-gold));
     border-radius: 999px;
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-gold-soft);
+    outline: 2px solid var(--color-gold);
     outline-offset: 3px;
     border-radius: 4px;
   }
@@ -151,15 +116,32 @@
 /* ============================================================
    UTILITIES
    ============================================================ */
+
+/* Oltin folga effektidagi sarlavha — yorugʻ fonda ham oʻqiladi */
+@utility gold-plate {
+  background-image: linear-gradient(
+    100deg,
+    #7d5f1d 0%,
+    #b48a2f 26%,
+    #d9bb6a 46%,
+    #a97f28 66%,
+    #7d5f1d 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Sekin porlab turuvchi variant — faqat asosiy ism uchun */
 @utility gold-shimmer {
   background-image: linear-gradient(
     100deg,
-    #8c6d1f 0%,
-    #d4af37 22%,
-    #f7ecd0 45%,
-    #e6c87d 62%,
-    #d4af37 80%,
-    #a17c22 100%
+    #7d5f1d 0%,
+    #b48a2f 20%,
+    #e2c67d 42%,
+    #b48a2f 62%,
+    #8a6a22 82%,
+    #7d5f1d 100%
   );
   background-size: 220% auto;
   -webkit-background-clip: text;
@@ -168,59 +150,45 @@
   animation: var(--animate-shimmer);
 }
 
-@utility gold-plate {
-  background-image: linear-gradient(
-    100deg,
-    #a17c22 0%,
-    #d4af37 30%,
-    #f2e2c0 52%,
-    #d4af37 74%,
-    #a17c22 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-@utility glass-card {
+/* Oq qogʻoz kartochka */
+@utility paper-card {
   background: linear-gradient(
-    150deg,
-    rgba(255, 246, 224, 0.075) 0%,
-    rgba(255, 246, 224, 0.028) 42%,
-    rgba(10, 7, 5, 0.28) 100%
+    155deg,
+    rgba(255, 253, 249, 0.95) 0%,
+    rgba(250, 244, 233, 0.88) 60%,
+    rgba(244, 235, 219, 0.85) 100%
   );
-  backdrop-filter: blur(14px) saturate(120%);
-  -webkit-backdrop-filter: blur(14px) saturate(120%);
-  border: 1px solid rgba(212, 175, 55, 0.24);
+  border: 1px solid rgba(180, 138, 47, 0.26);
   box-shadow:
-    0 24px 60px -28px rgba(0, 0, 0, 0.9),
-    inset 0 1px 0 rgba(255, 240, 205, 0.14);
+    0 18px 44px -26px rgba(112, 84, 30, 0.35),
+    0 2px 6px -2px rgba(112, 84, 30, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
 }
 
 @utility hairline-gold {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(212, 175, 55, 0.55) 30%,
-    rgba(242, 226, 192, 0.95) 50%,
-    rgba(212, 175, 55, 0.55) 70%,
+    rgba(180, 138, 47, 0.45) 28%,
+    rgba(138, 106, 34, 0.85) 50%,
+    rgba(180, 138, 47, 0.45) 72%,
     transparent
   );
 }
 
 @utility eyebrow {
   font-family: var(--font-sans);
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   font-weight: 500;
-  letter-spacing: 0.42em;
+  letter-spacing: 0.4em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--color-gold-soft) 88%, transparent);
+  color: var(--color-gold-deep);
 }
 
-/* Fon uchun nozik shovqin (noise) teksturasi — SVG, tashqi rasm talab qilmaydi */
-@utility noise-overlay {
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
-  background-size: 200px 200px;
+/* Nozik qogʻoz teksturasi — tashqi rasm talab qilmaydi */
+@utility paper-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  background-size: 190px 190px;
 }
 
 /* ============================================================
@@ -248,43 +216,12 @@
   }
 }
 
-@keyframes twinkle {
-  0%,
-  100% {
-    opacity: 0.12;
-    transform: scale(0.55);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.15);
-  }
-}
-
 .ring-sheen {
-  stroke-dasharray: 58 439;
-  animation: ringSheen 7s linear infinite;
+  stroke-dasharray: 52 445;
+  animation: ringSheen 8s linear infinite;
 }
 
 .ring-sheen--slow {
-  animation-duration: 9.5s;
-  animation-delay: -3.2s;
-}
-
-.sparkle {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: twinkle 3.4s ease-in-out infinite;
-}
-
-.sparkle--a {
-  animation-delay: 0s;
-}
-.sparkle--b {
-  animation-delay: 0.9s;
-}
-.sparkle--c {
-  animation-delay: 1.7s;
-}
-.sparkle--d {
-  animation-delay: 2.5s;
+  animation-duration: 11s;
+  animation-delay: -4s;
 }

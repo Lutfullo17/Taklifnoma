@@ -6,7 +6,7 @@ import { wedding } from "@/lib/wedding";
 
 /**
  * Google Maps — ekranga yaqinlashganda yuklanadi (lazy).
- * Bu Lighthouse ballini saqlab qoladi va mobil trafikni tejaydi.
+ * Bu sahifaning ochilish tezligini saqlab qoladi va mobil trafikni tejaydi.
  */
 export default function MapFrame() {
   const holderRef = useRef<HTMLDivElement>(null);
@@ -17,7 +17,6 @@ export default function MapFrame() {
     const el = holderRef.current;
     if (!el) return;
 
-    // IntersectionObserver mavjud boʻlmasa — darhol yuklaymiz
     if (typeof IntersectionObserver === "undefined") {
       setInView(true);
       return;
@@ -35,11 +34,9 @@ export default function MapFrame() {
 
     io.observe(el);
 
-    // Zaxira: kuzatuvchi biror sababga koʻra ishlamasa, scroll paytida
-    // xaritaga yaqinlashganini oʻzimiz tekshiramiz
+    // Zaxira: kuzatuvchi ishlamay qolsa, scroll paytida oʻzimiz tekshiramiz
     const onScroll = () => {
-      const rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight * 1.6) {
+      if (el.getBoundingClientRect().top < window.innerHeight * 1.6) {
         setInView(true);
         io.disconnect();
         window.removeEventListener("scroll", onScroll);
@@ -56,33 +53,22 @@ export default function MapFrame() {
   return (
     <div
       ref={holderRef}
-      className="relative aspect-[4/3] w-full overflow-hidden rounded-[1.4rem] sm:aspect-[16/10] sm:rounded-[1.75rem] lg:aspect-[16/8]"
+      className="relative aspect-[4/3] w-full overflow-hidden rounded-[1.25rem] shadow-[0_20px_44px_-26px_rgba(112,84,30,0.5)] sm:aspect-[16/9] sm:rounded-[1.5rem]"
     >
       {/* Oltin ramka */}
       <span
         aria-hidden
-        className="pointer-events-none absolute inset-0 z-20 rounded-[1.4rem] border border-gold/35 sm:rounded-[1.75rem]"
-        style={{ boxShadow: "inset 0 1px 0 rgba(255,240,205,0.18)" }}
-      />
-
-      {/* Chekkalarni fonga qorishtiruvchi qatlam */}
-      <span
-        aria-hidden
-        className="pointer-events-none absolute inset-0 z-10 rounded-[1.4rem] sm:rounded-[1.75rem]"
-        style={{
-          background:
-            "radial-gradient(ellipse 130% 130% at 50% 50%, transparent 58%, rgba(5,4,3,0.45) 100%)",
-        }}
+        className="pointer-events-none absolute inset-0 z-20 rounded-[1.25rem] border border-gold/35 sm:rounded-[1.5rem]"
       />
 
       {/* Skeleton */}
       {!loaded && (
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-espresso/60">
-          <span className="relative flex h-12 w-12 items-center justify-center">
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-sand/60">
+          <span className="relative flex h-10 w-10 items-center justify-center">
             <span className="absolute inset-0 animate-ping rounded-full bg-gold/20" />
-            <MapPin className="relative h-6 w-6 text-gold-soft" strokeWidth={1.4} />
+            <MapPin className="relative h-5 w-5 text-gold-deep" strokeWidth={1.5} />
           </span>
-          <p className="text-[0.68rem] tracking-[0.28em] text-cream/45 uppercase">
+          <p className="text-[0.62rem] tracking-[0.24em] text-ink-mute uppercase">
             Xarita yuklanmoqda
           </p>
         </div>
@@ -97,7 +83,6 @@ export default function MapFrame() {
           referrerPolicy="strict-origin-when-cross-origin"
           onLoad={() => setLoaded(true)}
           className="absolute inset-0 h-full w-full border-0"
-          style={{ filter: "saturate(0.88) contrast(1.04) brightness(0.95)" }}
         />
       )}
     </div>

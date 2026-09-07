@@ -1,7 +1,11 @@
 # Rizoyev Diyorbek — Nikoh Toʻyi taklifnomasi
 
-Premium, kinematik nikoh taklifnomasi sayti. Mobil qurilmalar uchun birinchi
-navbatda optimallashtirilgan (foydalanuvchilar asosan Telegram orqali kiradi).
+Yorugʻ, nafis nikoh taklifnomasi sayti — fil suyagi rangli "qogʻoz" va oltin
+folga uslubida. Mobil qurilmalar uchun birinchi navbatda optimallashtirilgan
+(mehmonlar asosan Telegram orqali kiradi).
+
+Sahifa qisqa: toʻrtta boʻlim — Hero · Taklifnoma · Sanoq · Manzil. Navigatsiya
+paneli yoʻq, manzil esa faqat bitta joyda — "Toʻy manzili" boʻlimida yoziladi.
 
 **Stack:** Next.js 16 (App Router) · TypeScript · Tailwind CSS v4 · Framer Motion · Lucide Icons
 
@@ -23,24 +27,23 @@ npm start        # production serverni ishga tushirish
 ```
 app/
   layout.tsx            Shriftlar, SEO metadata, Open Graph, JSON-LD
-  page.tsx              Barcha boʻlimlar shu yerda birlashtiriladi
-  globals.css           Dizayn tizimi: ranglar, shriftlar, utility'lar, animatsiyalar
+  page.tsx              Toʻrtta boʻlim shu yerda birlashtiriladi
+  globals.css           Dizayn tizimi: yorugʻ palitra, shriftlar, utility'lar
   opengraph-image.tsx   Telegram/ijtimoiy tarmoq uchun dinamik preview rasmi
   icon.tsx              Brauzer yorligʻi belgisi
   sitemap.ts / robots.ts
 
 components/
   IntroContext.tsx      Yuklanish tugaganini kuzatuvchi context
-  Preloader.tsx         Premium yuklanish ekrani
+  Preloader.tsx         Qisqa yuklanish ekrani (~1.1 s)
   MusicToggle.tsx       Musiqa tugmasi (avtomatik yoqilmaydi)
-  layout/Nav.tsx        Minimal navigatsiya + mobil menyu
-  layout/Footer.tsx
-  sections/             Hero · EventInfo · Countdown · Romantic · Location
-  visuals/              Rings (SVG uzuklar) · ParticleField (canvas) · Backdrop · MapFrame
+  Footer.tsx            Ism va aloqa raqami
+  sections/             Hero · Invitation · Countdown · Location
+  visuals/              Rings (SVG uzuklar) · Backdrop · MapFrame
   ui/                   Reveal · SectionTitle · Ornament · GoldButton
 
 lib/
-  wedding.ts            BARCHA toʻy maʼlumotlari shu yerda
+  wedding.ts            BARCHA toʻy maʼlumotlari va taklif matni
   ambientMusic.ts       Musiqa dvigateli
 ```
 

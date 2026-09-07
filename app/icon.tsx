@@ -14,7 +14,7 @@ export default function Icon() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "#050403",
+          backgroundColor: "#fdfaf4",
           borderRadius: 14,
         }}
       >
@@ -24,7 +24,7 @@ export default function Icon() {
             cy="30"
             r="13"
             fill="none"
-            stroke="#d4af37"
+            stroke="#8a6a22"
             strokeWidth="4.5"
           />
           <circle
@@ -32,10 +32,10 @@ export default function Icon() {
             cy="30"
             r="13"
             fill="none"
-            stroke="#f2e2c0"
+            stroke="#b48a2f"
             strokeWidth="4.5"
           />
-          <polygon points="20,4 26,12 20,19 14,12" fill="#f2e2c0" />
+          <polygon points="20,4 26,12 20,19 14,12" fill="#8a6a22" />
         </svg>
       </div>
     ),

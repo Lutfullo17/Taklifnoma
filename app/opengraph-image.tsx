@@ -14,21 +14,21 @@ export const contentType = "image/png";
 const ringsSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 250" width="420" height="250">
   <defs>
     <linearGradient id="a" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#7a5a18"/>
-      <stop offset="35%" stop-color="#f7ecd0"/>
-      <stop offset="65%" stop-color="#d4af37"/>
-      <stop offset="100%" stop-color="#6b4f14"/>
+      <stop offset="0%" stop-color="#8a6a22"/>
+      <stop offset="35%" stop-color="#f6e6bd"/>
+      <stop offset="65%" stop-color="#cfa63c"/>
+      <stop offset="100%" stop-color="#8a6a22"/>
     </linearGradient>
     <linearGradient id="b" x1="100%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#8c6d1f"/>
-      <stop offset="40%" stop-color="#fbf3dd"/>
-      <stop offset="70%" stop-color="#c9a331"/>
-      <stop offset="100%" stop-color="#5e4511"/>
+      <stop offset="0%" stop-color="#94711f"/>
+      <stop offset="40%" stop-color="#faf0d6"/>
+      <stop offset="70%" stop-color="#c19a34"/>
+      <stop offset="100%" stop-color="#7d5f1d"/>
     </linearGradient>
   </defs>
-  <ellipse cx="250" cy="125" rx="72" ry="82" transform="rotate(13 250 125)" fill="none" stroke="#4a3510" stroke-width="15"/>
+  <ellipse cx="250" cy="125" rx="72" ry="82" transform="rotate(13 250 125)" fill="none" stroke="#7a5c1c" stroke-opacity="0.7" stroke-width="15"/>
   <ellipse cx="250" cy="125" rx="72" ry="82" transform="rotate(13 250 125)" fill="none" stroke="url(#b)" stroke-width="11"/>
-  <ellipse cx="170" cy="125" rx="72" ry="82" transform="rotate(-13 170 125)" fill="none" stroke="#4a3510" stroke-width="15"/>
+  <ellipse cx="170" cy="125" rx="72" ry="82" transform="rotate(-13 170 125)" fill="none" stroke="#7a5c1c" stroke-opacity="0.7" stroke-width="15"/>
   <ellipse cx="170" cy="125" rx="72" ry="82" transform="rotate(-13 170 125)" fill="none" stroke="url(#a)" stroke-width="11"/>
   <polygon points="139,42 161,42 155,31 145,31" fill="#eaf4ff"/>
   <polygon points="139,42 161,42 150,60" fill="#b9d4ee"/>
@@ -93,9 +93,9 @@ export default async function Image() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "#050403",
+          backgroundColor: "#fdfaf4",
           backgroundImage:
-            "radial-gradient(ellipse 90% 70% at 50% 35%, rgba(212,175,55,0.20) 0%, rgba(140,109,31,0.07) 42%, rgba(5,4,3,0) 72%)",
+            "radial-gradient(ellipse 90% 70% at 50% 35%, rgba(197,157,66,0.24) 0%, rgba(197,157,66,0.09) 42%, rgba(253,250,244,0) 72%)",
           position: "relative",
           fontFamily: body,
         }}
@@ -108,7 +108,7 @@ export default async function Image() {
             left: 34,
             right: 34,
             bottom: 34,
-            border: "1px solid rgba(212,175,55,0.40)",
+            border: "1px solid rgba(180,138,47,0.55)",
             display: "flex",
           }}
         />
@@ -119,7 +119,7 @@ export default async function Image() {
             left: 44,
             right: 44,
             bottom: 44,
-            border: "1px solid rgba(212,175,55,0.16)",
+            border: "1px solid rgba(180,138,47,0.24)",
             display: "flex",
           }}
         />
@@ -132,7 +132,7 @@ export default async function Image() {
             display: "flex",
             fontSize: 26,
             letterSpacing: 16,
-            color: "#d4af37",
+            color: "#a97f28",
             fontFamily: display,
             marginTop: 18,
           }}
@@ -144,7 +144,7 @@ export default async function Image() {
           style={{
             display: "flex",
             fontSize: 104,
-            color: "#f4e6c4",
+            color: "#7d5f1d",
             fontFamily: display,
             fontWeight: 700,
             marginTop: 6,
@@ -161,7 +161,7 @@ export default async function Image() {
             height: 1,
             marginTop: 30,
             backgroundImage:
-              "linear-gradient(90deg, rgba(212,175,55,0) 0%, rgba(242,226,192,0.9) 50%, rgba(212,175,55,0) 100%)",
+              "linear-gradient(90deg, rgba(180,138,47,0) 0%, rgba(138,106,34,0.9) 50%, rgba(180,138,47,0) 100%)",
           }}
         />
 
@@ -170,7 +170,7 @@ export default async function Image() {
             display: "flex",
             fontSize: 25,
             letterSpacing: 6,
-            color: "#e6c87d",
+            color: "#8a6a22",
             marginTop: 28,
             fontFamily: display,
           }}
@@ -182,7 +182,7 @@ export default async function Image() {
           style={{
             display: "flex",
             fontSize: 27,
-            color: "rgba(247,241,229,0.62)",
+            color: "#6d5c48",
             marginTop: 16,
           }}
         >

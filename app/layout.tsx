@@ -62,8 +62,8 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
-  themeColor: "#050403",
-  colorScheme: "dark",
+  themeColor: "#fdfaf4",
+  colorScheme: "light",
 };
 
 const eventJsonLd = {
