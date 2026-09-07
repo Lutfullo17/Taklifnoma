@@ -75,8 +75,12 @@ public/music/wedding.mp3
 Sayt uni avtomatik topadi va sintez oʻrniga oʻsha faylni ijro etadi
 (qarang: [`lib/ambientMusic.ts`](lib/ambientMusic.ts)).
 
-Musiqa **hech qachon avtomatik yoqilmaydi** — faqat foydalanuvchi tugmani
-bosgandan keyin.
+Musiqa sahifa ochilishi bilan **avtomatik yoqiladi**. Brauzerlar (ayniqsa
+telefonlarda) foydalanuvchi sahifaga tegmasdan turib ovoz chiqarishni
+bloklaydi — bunday holda musiqa mehmonning birinchi harakatida (teginish,
+bosish yoki scroll) oʻzi yonadi, tugmani izlash shart emas.
+
+Mehmon tugma orqali musiqani oʻchirsa, u boshqa avtomatik yoqilmaydi.
 
 ---
 

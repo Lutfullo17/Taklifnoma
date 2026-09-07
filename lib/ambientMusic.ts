@@ -6,7 +6,9 @@
  *  2. Aks holda Web Audio API orqali yumshoq pianino uslubidagi
  *     arpeggio + pad real vaqtda sintez qilinadi (hech qanday fayl kerak emas).
  *
- * Musiqa hech qachon avtomatik yoqilmaydi — faqat foydalanuvchi bosgandan keyin.
+ * Sayt ochilishi bilan avtomatik yoqishga urinamiz. Brauzerlar foydalanuvchi
+ * sahifaga tegmasdan turib ovoz chiqarishni bloklaydi — bunday holda
+ * `startMusic()` `null` qaytaradi va chaqiruvchi birinchi teginishni kutadi.
  */
 
 const TRACK_URL = "/music/wedding.mp3";
@@ -45,17 +47,32 @@ function createReverb(ctx: AudioContext): ConvolverNode {
   return convolver;
 }
 
-/** Web Audio orqali jonli sintez */
-function startSynth(volume: number): Engine {
+/**
+ * Web Audio orqali jonli sintez.
+ * Brauzer avtomatik ijroni bloklasa `null` qaytaradi — bu holda chaqiruvchi
+ * foydalanuvchining birinchi teginishini kutadi.
+ */
+async function startSynth(volume: number): Promise<Engine | null> {
   type Ctor = typeof AudioContext;
   const Ctx: Ctor | undefined =
     window.AudioContext ??
     (window as unknown as { webkitAudioContext?: Ctor }).webkitAudioContext;
 
-  if (!Ctx) return { stop: () => {} };
+  if (!Ctx) return null;
 
   const ctx = new Ctx();
-  void ctx.resume();
+  try {
+    await ctx.resume();
+  } catch {
+    /* ignore */
+  }
+
+  // Foydalanuvchi hali sahifaga tegmagan boʻlsa, brauzer kontekstni
+  // "suspended" holatida ushlab turadi — ovoz chiqmaydi.
+  if (ctx.state !== "running") {
+    void ctx.close().catch(() => {});
+    return null;
+  }
 
   const master = ctx.createGain();
   master.gain.setValueAtTime(0.0001, ctx.currentTime);
@@ -176,8 +193,11 @@ async function trackExists(): Promise<boolean> {
   }
 }
 
-/** Musiqani yoqadi va toʻxtatish funksiyasini qaytaradi */
-export async function startMusic(volume = 0.22): Promise<Engine> {
+/**
+ * Musiqani yoqadi va toʻxtatish funksiyasini qaytaradi.
+ * Brauzer ovozni bloklagan boʻlsa `null` qaytaradi.
+ */
+export async function startMusic(volume = 0.22): Promise<Engine | null> {
   if (await trackExists()) {
     const audio = new Audio(TRACK_URL);
     audio.loop = true;
