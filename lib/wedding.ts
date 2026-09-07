@@ -23,7 +23,14 @@ export const wedding = {
     district: "Urgut tumani",
     neighborhood: "Quyi Tegana mahallasi",
     addressLines: ["Urgut tumani,", "Quyi Tegana mahallasi"],
-    coords: { lat: 39.46894518352191, lng: 67.23032159927324 },
+    /**
+     * Toʻyxonaning ANIQ koordinatasi (Plus Code: F69J+M2F).
+     * Diqqat: quyidagi embed havolasidagi `@39.4689452,67.2303216` — bu
+     * xaritaning markazi, toʻyxonaning oʻzi emas. Oʻsha markazni ishlatilsa,
+     * Google navigatsiyani qoʻshni hovliga (F69J+H5) olib boradi.
+     * Shuning uchun bu yerda joyning haqiqiy nuqtasi turibdi.
+     */
+    coords: { lat: 39.4691926, lng: 67.2300571 },
     shortLink: "https://maps.app.goo.gl/pPtoV1kJ82ysznqR6",
     embedSrc:
       "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1087.3932493065224!2d67.23032159927324!3d39.46894518352191!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3f4cd1df9f7cb157%3A0x9521f226b6c6e49!2sUzoq%20ota%20tuyxonasi!5e0!3m2!1suz!2s!4v1788721896266!5m2!1suz!2s",
