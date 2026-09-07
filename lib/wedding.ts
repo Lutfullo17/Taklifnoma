@@ -39,7 +39,7 @@ export const wedding = {
     phoneHref: "+998910351202",
   },
   site: {
-    url: "https://diyorbeknikoh.vercel.app",
+    url: "https://taklifnoma.vercel.app",
     title: "Rizoyev Diyorbek | Nikoh Toʻyi",
     description:
       "Rizoyev Diyorbekning nikoh toʻyiga taklifnoma. 22-sentabr, 2026-yil, soat 14:00. Uzoq Ota toʻyxonasi.",
