@@ -87,11 +87,17 @@ npx vercel login       # bir marta
 npx vercel --prod
 ```
 
-Loyiha nomini `diyorbeknikoh` deb bersangiz, manzil
-`https://diyorbeknikoh.vercel.app` boʻladi.
+Sayt allaqachon deploy qilingan:
 
-Deploydan keyin `lib/wedding.ts` ichidagi `site.url` ni haqiqiy manzilga
-oʻzgartiring — Open Graph rasmi va sitemap shu manzilga bogʻlangan.
+- **Jonli manzil:** https://taklifnoma-nikoh-toy.vercel.app
+- **GitHub:** https://github.com/Lutfullo17/Taklifnoma (`main` branch)
+- **Vercel loyihasi:** `taklifnoma`
+
+`main` ga push qilinsa Vercel avtomatik qayta deploy qiladi.
+
+Domen oʻzgartirilsa, `lib/wedding.ts` ichidagi `site.url` ni ham yangilash
+kerak — Open Graph rasmi, canonical havola va sitemap mutlaq manzillarni
+shundan oladi.
 
 ---
 
