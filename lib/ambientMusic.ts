@@ -6,9 +6,11 @@
  *  2. Aks holda Web Audio API orqali yumshoq pianino uslubidagi
  *     arpeggio + pad real vaqtda sintez qilinadi (hech qanday fayl kerak emas).
  *
- * Sayt ochilishi bilan avtomatik yoqishga urinamiz. Brauzerlar foydalanuvchi
- * sahifaga tegmasdan turib ovoz chiqarishni bloklaydi — bunday holda
- * `startMusic()` `null` qaytaradi va chaqiruvchi birinchi teginishni kutadi.
+ * MUHIM: brauzerlar ovozni faqat foydalanuvchi harakati ichida ochadi va bu
+ * "ruxsat oynasi" birinchi `await` da yopiladi. Shuning uchun `startMusicSync()`
+ * butunlay SINXRON ishlaydi — AudioContext yoki Audio elementi hodisa
+ * ishlovchisi ichida darhol yaratiladi. MP3 bor-yoʻqligi esa oldindan,
+ * `prepareMusic()` orqali tekshirib qoʻyiladi.
  */
 
 const TRACK_URL = "/music/wedding.mp3";
@@ -24,9 +26,37 @@ const PROGRESSION: { bass: number; notes: number[] }[] = [
 const NOTE_LEN = 0.62; // sekund
 const NOTES_PER_CHORD = 6;
 
-type Engine = {
+export type Engine = {
   stop: () => void;
+  /** Ovoz haqiqatan chalina boshladimi — brauzer bloklagan boʻlsa `false` */
+  ready: Promise<boolean>;
 };
+
+/* ------------------------------------------------------------------ */
+/*  MP3 mavjudligini oldindan tekshirish (natija keshlanadi)           */
+/* ------------------------------------------------------------------ */
+
+let trackAvailable = false;
+let prepared: Promise<void> | null = null;
+
+export function prepareMusic(): Promise<void> {
+  if (!prepared) {
+    prepared = (async () => {
+      try {
+        const res = await fetch(TRACK_URL, { method: "HEAD" });
+        const type = res.headers.get("content-type") ?? "";
+        trackAvailable = res.ok && !type.includes("text/html");
+      } catch {
+        trackAvailable = false;
+      }
+    })();
+  }
+  return prepared;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Web Audio sintezi                                                  */
+/* ------------------------------------------------------------------ */
 
 function createReverb(ctx: AudioContext): ConvolverNode {
   const seconds = 2.6;
@@ -47,12 +77,8 @@ function createReverb(ctx: AudioContext): ConvolverNode {
   return convolver;
 }
 
-/**
- * Web Audio orqali jonli sintez.
- * Brauzer avtomatik ijroni bloklasa `null` qaytaradi — bu holda chaqiruvchi
- * foydalanuvchining birinchi teginishini kutadi.
- */
-async function startSynth(volume: number): Promise<Engine | null> {
+/** Sintezni ishga tushiradi. Hodisa ishlovchisi ichida sinxron chaqirilishi shart. */
+function startSynthSync(volume: number): Engine | null {
   type Ctor = typeof AudioContext;
   const Ctx: Ctor | undefined =
     window.AudioContext ??
@@ -61,18 +87,8 @@ async function startSynth(volume: number): Promise<Engine | null> {
   if (!Ctx) return null;
 
   const ctx = new Ctx();
-  try {
-    await ctx.resume();
-  } catch {
-    /* ignore */
-  }
-
-  // Foydalanuvchi hali sahifaga tegmagan boʻlsa, brauzer kontekstni
-  // "suspended" holatida ushlab turadi — ovoz chiqmaydi.
-  if (ctx.state !== "running") {
-    void ctx.close().catch(() => {});
-    return null;
-  }
+  // `await` qilmaymiz — foydalanuvchi harakatining ruxsat oynasi yopilmasligi kerak
+  const resumed = ctx.resume().catch(() => {});
 
   const master = ctx.createGain();
   master.gain.setValueAtTime(0.0001, ctx.currentTime);
@@ -152,7 +168,8 @@ async function startSynth(volume: number): Promise<Engine | null> {
   const scheduler = window.setInterval(() => {
     // Kelgusi 0.6 sekundlik notalarni oldindan rejalashtiramiz
     while (nextTime < ctx.currentTime + 0.6) {
-      const chord = PROGRESSION[Math.floor(step / NOTES_PER_CHORD) % PROGRESSION.length];
+      const chord =
+        PROGRESSION[Math.floor(step / NOTES_PER_CHORD) % PROGRESSION.length];
       const idx = step % NOTES_PER_CHORD;
 
       if (idx === 0) pad(chord.bass, nextTime, NOTE_LEN * NOTES_PER_CHORD);
@@ -166,70 +183,89 @@ async function startSynth(volume: number): Promise<Engine | null> {
     }
   }, 120);
 
-  return {
-    stop: () => {
-      window.clearInterval(scheduler);
-      const t = ctx.currentTime;
-      try {
-        master.gain.cancelScheduledValues(t);
-        master.gain.setValueAtTime(Math.max(master.gain.value, 0.0001), t);
-        master.gain.exponentialRampToValueAtTime(0.0001, t + 1.1);
-      } catch {
-        /* ignore */
-      }
-      window.setTimeout(() => void ctx.close().catch(() => {}), 1400);
-    },
+  let stopped = false;
+  const stop = () => {
+    if (stopped) return;
+    stopped = true;
+    window.clearInterval(scheduler);
+    const t = ctx.currentTime;
+    try {
+      master.gain.cancelScheduledValues(t);
+      master.gain.setValueAtTime(Math.max(master.gain.value, 0.0001), t);
+      master.gain.exponentialRampToValueAtTime(0.0001, t + 1.1);
+    } catch {
+      /* ignore */
+    }
+    window.setTimeout(() => void ctx.close().catch(() => {}), 1400);
   };
+
+  // Kontekst haqiqatan ochilganini bir necha marta tekshiramiz
+  const ready = (async () => {
+    await resumed;
+    for (let i = 0; i < 6 && ctx.state !== "running"; i += 1) {
+      await new Promise((r) => setTimeout(r, 60));
+    }
+    return ctx.state === "running";
+  })();
+
+  return { stop, ready };
 }
 
-/** MP3 fayl mavjudligini tekshirish */
-async function trackExists(): Promise<boolean> {
-  try {
-    const res = await fetch(TRACK_URL, { method: "HEAD" });
-    const type = res.headers.get("content-type") ?? "";
-    return res.ok && !type.includes("text/html");
-  } catch {
-    return false;
-  }
+/* ------------------------------------------------------------------ */
+/*  MP3 ijrosi                                                         */
+/* ------------------------------------------------------------------ */
+
+function startTrackSync(volume: number): Engine {
+  const audio = new Audio(TRACK_URL);
+  audio.loop = true;
+  audio.volume = 0;
+  audio.preload = "auto";
+
+  // `play()` ham sinxron chaqiriladi
+  const playing = audio.play();
+
+  let fade = 0;
+  let stopped = false;
+
+  const ready = playing
+    .then(() => {
+      if (stopped) return false;
+      const target = Math.min(1, volume * 2.4);
+      fade = window.setInterval(() => {
+        audio.volume = Math.min(target, audio.volume + 0.02);
+        if (audio.volume >= target - 0.001) window.clearInterval(fade);
+      }, 90);
+      return true;
+    })
+    .catch(() => false);
+
+  const stop = () => {
+    if (stopped) return;
+    stopped = true;
+    window.clearInterval(fade);
+    const out = window.setInterval(() => {
+      audio.volume = Math.max(0, audio.volume - 0.03);
+      if (audio.volume <= 0.001) {
+        window.clearInterval(out);
+        audio.pause();
+        audio.currentTime = 0;
+      }
+    }, 60);
+  };
+
+  return { stop, ready };
 }
+
+/* ------------------------------------------------------------------ */
 
 /**
- * Musiqani yoqadi va toʻxtatish funksiyasini qaytaradi.
- * Brauzer ovozni bloklagan boʻlsa `null` qaytaradi.
+ * Musiqani yoqadi.
+ *
+ * Foydalanuvchi harakati (bosish/teginish) ishlovchisi ichida SINXRON
+ * chaqirilishi shart — aks holda brauzer ovozni bloklaydi.
+ * Qaytgan `engine.ready` ovoz haqiqatan chalina boshlaganini bildiradi.
  */
-export async function startMusic(volume = 0.22): Promise<Engine | null> {
-  if (await trackExists()) {
-    const audio = new Audio(TRACK_URL);
-    audio.loop = true;
-    audio.volume = 0;
-
-    try {
-      await audio.play();
-    } catch {
-      // Brauzer ruxsat bermasa — sintezga oʻtamiz
-      return startSynth(volume);
-    }
-
-    // Yumshoq kirish
-    const fade = window.setInterval(() => {
-      audio.volume = Math.min(volume * 2.4, audio.volume + 0.02);
-      if (audio.volume >= volume * 2.4 - 0.001) window.clearInterval(fade);
-    }, 90);
-
-    return {
-      stop: () => {
-        window.clearInterval(fade);
-        const out = window.setInterval(() => {
-          audio.volume = Math.max(0, audio.volume - 0.03);
-          if (audio.volume <= 0.001) {
-            window.clearInterval(out);
-            audio.pause();
-            audio.currentTime = 0;
-          }
-        }, 60);
-      },
-    };
-  }
-
-  return startSynth(volume);
+export function startMusicSync(volume = 0.22): Engine | null {
+  if (trackAvailable) return startTrackSync(volume);
+  return startSynthSync(volume);
 }

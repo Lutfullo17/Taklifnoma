@@ -3,34 +3,46 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Music2 } from "lucide-react";
-import { startMusic } from "@/lib/ambientMusic";
+import { prepareMusic, startMusicSync, type Engine } from "@/lib/ambientMusic";
 import { useIntro } from "./IntroContext";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const BARS = [0.45, 0.95, 0.65, 1, 0.55];
 
+/** Ovozni ochish uchun brauzer tan oladigan haqiqiy harakatlar */
+const GESTURES = ["pointerdown", "touchend", "click", "keydown"] as const;
+
 /**
  * Musiqa avtomatik yoqiladi.
  *
  * Brauzerlar (ayniqsa telefonlarda) foydalanuvchi sahifaga tegmasdan turib
- * ovoz chiqarishni bloklaydi. Shuning uchun ikki bosqich:
+ * ovoz chiqarishni bloklaydi. Shuning uchun:
  *   1. Sahifa ochilishi bilan darhol yoqishga urinamiz.
- *   2. Bloklansa — mehmonning birinchi harakatini (teginish, bosish, scroll)
- *      kutamiz va oʻsha zahoti yoqamiz. Tugmani izlash shart emas.
+ *   2. Shu bilan birga mehmonning har qanday teginishiga obuna boʻlamiz —
+ *      birinchi teginishda musiqa oʻsha hodisaning oʻzida SINXRON yoqiladi.
+ *      Musiqa yonishi bilan obunalar olib tashlanadi.
+ *
+ * Sinxronlik hal qiluvchi: teginish bilan `startMusicSync()` orasida biror
+ * `await` boʻlsa, brauzerning ruxsat oynasi yopiladi va ovoz chiqmaydi.
  *
  * Mehmon musiqani oʻzi oʻchirsa, u boshqa avtomatik yoqilmaydi.
  */
 export default function MusicToggle() {
   const { ready } = useIntro();
   const [playing, setPlaying] = useState(false);
-  const [busy, setBusy] = useState(false);
 
-  const engineRef = useRef<{ stop: () => void } | null>(null);
+  const engineRef = useRef<Engine | null>(null);
   /** Mehmon tugma orqali oʻchirgan boʻlsa — avtomatik yoqmaymiz */
   const userStoppedRef = useRef(false);
+  /** Ayni paytda urinish ketayaptimi — bir vaqtda bittadan koʻp boʻlmasin */
+  const startingRef = useRef(false);
   const detachRef = useRef<(() => void) | null>(null);
 
-  // Komponent yoʻq qilinganda musiqa toʻxtaydi
+  // MP3 bor-yoʻqligini oldindan aniqlab qoʻyamiz, teginish paytida emas
+  useEffect(() => {
+    void prepareMusic();
+  }, []);
+
   useEffect(
     () => () => {
       engineRef.current?.stop();
@@ -39,76 +51,66 @@ export default function MusicToggle() {
     [],
   );
 
-  /** Musiqani yoqishga urinadi. Muvaffaqiyatli boʻlsa true qaytaradi. */
+  /**
+   * Musiqani yoqishga uriniladi.
+   * `startMusicSync()` birinchi `await` dan OLDIN chaqiriladi — shuning uchun
+   * bu funksiyani hodisa ishlovchisidan toʻgʻridan-toʻgʻri chaqirsa boʻladi.
+   */
   const attemptStart = useCallback(async () => {
-    if (engineRef.current || userStoppedRef.current) return true;
+    if (engineRef.current || userStoppedRef.current || startingRef.current) {
+      return false;
+    }
+    startingRef.current = true;
 
-    const engine = await startMusic();
-    if (!engine) return false;
+    // <-- hech qanday `await` dan keyin turmasligi shart
+    const engine = startMusicSync();
+    if (!engine) {
+      startingRef.current = false;
+      return false;
+    }
 
-    if (userStoppedRef.current) {
-      // Urinish davomida mehmon oʻchirgan boʻlsa
+    const ok = await engine.ready;
+    startingRef.current = false;
+
+    if (!ok || userStoppedRef.current) {
       engine.stop();
-      return true;
+      return false;
     }
 
     engineRef.current = engine;
     setPlaying(true);
+    // Musiqa yondi — teginish kutishning hojati qolmadi
+    detachRef.current?.();
     return true;
   }, []);
 
-  // Avtomatik yoqish
+  // Avtomatik yoqish + teginish kutuvchilari
   useEffect(() => {
     if (!ready) return;
 
-    let cancelled = false;
+    const onGesture = () => {
+      void attemptStart();
+    };
 
-    const detach = () => {
+    // Kutuvchilarni shartsiz biriktiramiz: avtoijro ishlab ketsa,
+    // `attemptStart` ularni oʻzi olib tashlaydi.
+    GESTURES.forEach((e) =>
+      window.addEventListener(e, onGesture, { passive: true }),
+    );
+    detachRef.current = () => {
+      GESTURES.forEach((e) => window.removeEventListener(e, onGesture));
       detachRef.current = null;
     };
 
-    const run = async () => {
-      const started = await attemptStart();
-      if (cancelled || started) return;
-
-      // Brauzer bloklagan — birinchi harakatni kutamiz.
-      // iOS Safari faqat haqiqiy teginish/bosishni tan oladi, shuning uchun
-      // bir nechta hodisaga birdaniga obuna boʻlamiz.
-      const events = [
-        "pointerdown",
-        "touchend",
-        "click",
-        "keydown",
-        "scroll",
-      ] as const;
-
-      const onFirst = async () => {
-        const ok = await attemptStart();
-        if (ok) cleanup();
-      };
-
-      const cleanup = () => {
-        events.forEach((e) => window.removeEventListener(e, onFirst));
-        detach();
-      };
-
-      events.forEach((e) =>
-        window.addEventListener(e, onFirst, { passive: true }),
-      );
-      detachRef.current = cleanup;
-    };
-
-    void run();
+    // Darhol urinib koʻramiz
+    void attemptStart();
 
     return () => {
-      cancelled = true;
       detachRef.current?.();
     };
   }, [ready, attemptStart]);
 
-  const toggle = useCallback(async () => {
-    if (busy) return;
-
+  const toggle = useCallback(() => {
     if (engineRef.current) {
       engineRef.current.stop();
       engineRef.current = null;
@@ -118,14 +120,10 @@ export default function MusicToggle() {
       return;
     }
 
-    setBusy(true);
-    try {
-      userStoppedRef.current = false;
-      await attemptStart();
-    } finally {
-      setBusy(false);
-    }
-  }, [busy, attemptStart]);
+    userStoppedRef.current = false;
+    // Bosishning oʻzi ruxsat oynasi — sinxron boshlanadi
+    void attemptStart();
+  }, [attemptStart]);
 
   return (
     <motion.div
@@ -194,9 +192,7 @@ export default function MusicToggle() {
             </span>
           ) : (
             <Music2
-              className={`h-5 w-5 text-gold-deep transition-transform duration-500 group-hover:scale-110 ${
-                busy ? "animate-pulse" : ""
-              }`}
+              className="h-5 w-5 text-gold-deep transition-transform duration-500 group-hover:scale-110"
               strokeWidth={1.5}
               aria-hidden
             />
